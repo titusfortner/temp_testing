@@ -23,11 +23,6 @@ jobs:
       - name: Save changes
         run: |
           echo "hello world" > hello.txt
-      - name: Check changes
-        run: |
-          if ${{ github.event.inputs.fail }}; then
-            exit 1
-          fi
       - name: "Upload changes"
         uses: actions/upload-artifact@v4
         with:
