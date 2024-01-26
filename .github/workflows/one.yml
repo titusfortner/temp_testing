@@ -1,0 +1,35 @@
+name: One
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: Name of workflow
+        required: false
+        type: string
+      fail:
+        description: Force to fail
+        required: false
+        type: boolean
+
+jobs:
+  called_job:
+    name: ${{ inputs.name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v4
+      - name: Save changes
+        run: |
+          echo "hello world" > hello.txt
+      - name: Check changes
+        run: |
+          if ${{ github.event.inputs.fail }}; then
+            exit 1
+          fi
+      - name: "Upload changes"
+        uses: actions/upload-artifact@v4
+        with:
+          name: hello-world
+          path: hello.txt
+          retention-days: 6
