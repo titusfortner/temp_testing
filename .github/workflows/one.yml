@@ -10,8 +10,7 @@ on:
       fail:
         description: Force to fail
         required: false
-        type: boolean
-        default: false
+        type: string
 
 jobs:
   called_job:
@@ -23,9 +22,9 @@ jobs:
       - name: Save changes
         run: |
           echo "hello world" > hello.txt
-      - name: Check changes
+      - name: Check failure
         run: |
-          if [[${{ github.event.inputs.fail }}]]; then
+          if [[ "${{ github.event.inputs.fail }}" == "true" ]]; then
             exit 1
           fi
       - name: "Upload changes"
