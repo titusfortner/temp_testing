@@ -13,6 +13,7 @@ jobs:
 
   use_result:
     name: Use Result
+    if: always()
     runs-on: ubuntu-latest
     needs: call_workflow
     steps:
