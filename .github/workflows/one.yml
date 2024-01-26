@@ -25,11 +25,11 @@ jobs:
           echo "hello world" > hello.txt
       - name: Check failure
         run: |
-          if [[ ${{ github.event.inputs.fail }} ]]; then
+          if [[ ${{ inputs.fail }} ]]; then
             exit 1
           fi
       - name: "Upload changes"
-        if: always()
+        if: always() && ${{ inputs.name == 'should not run' }}
         uses: actions/upload-artifact@v4
         with:
           name: hello-world
