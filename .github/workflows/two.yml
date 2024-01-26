@@ -9,6 +9,7 @@ jobs:
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
+      fail: true
 
   use_result:
     name: Use Result
@@ -21,7 +22,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: hello-world
-          fail: true
       - name: Verify file
         run: |
           file_content=$(cat hello.txt)
