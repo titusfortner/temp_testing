@@ -20,10 +20,10 @@ jobs:
       - name: Download file
         uses: actions/download-artifact@v4
         with:
-          name: Hello World
+          name: hello-world
       - name: Verify file
         run: |
-          if [ ! -f hello.txt ]; then
-            echo "Error: hello.txt does not exist."
+          file_content=$(cat hello.txt)
+          if [[ "$file_content" != "hello world" ]]; then
             exit 1
           fi
