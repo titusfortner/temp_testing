@@ -39,7 +39,7 @@ jobs:
       - name: Download file
         uses: actions/download-artifact@v4
         with:
-          name: hello-world
+          name: hello-world-pass
       - name: Verify file
         run: |
           file_content=$(cat hello.txt)
@@ -58,7 +58,7 @@ jobs:
       - name: Download file
         uses: actions/download-artifact@v4
         with:
-          name: hello-world
+          name: hello-world-fail
       - name: Verify file
         run: |
           file_content=$(cat hello.txt)
