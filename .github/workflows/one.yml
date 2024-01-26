@@ -10,8 +10,13 @@ on:
       fail:
         description: Force to fail
         required: false
-        type: boolean
-        default: false
+        type: string
+        default: 'false'
+      artifact-name:
+        description: Name of artifact
+        required: false
+        type: string
+        default: 'ignore-artifacts'
 
 jobs:
   called_job:
@@ -20,18 +25,19 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
-      - name: Save changes
-        run: |
-          echo "hello world" > hello.txt
       - name: Check failure
         run: |
-          if [[ ${{ inputs.fail }} ]]; then
+          if [[ "${{ inputs.fail }}" == 'true' ]]; then
             exit 1
           fi
+      - name: Save changes
+        if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
+        run: |
+          echo "hello world" > hello.txt
       - name: "Upload changes"
-        if: ${{ always() && inputs.fail }}
+        if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
         uses: actions/upload-artifact@v4
         with:
-          name: hello-world
+          name: ${{ inputs.artifact-name }}
           path: hello.txt
           retention-days: 6

@@ -2,34 +2,43 @@ name: Two
 
 on:
   workflow_dispatch:
+  pull_request:
 
 jobs:
-  call_workflow:
+  call_workflow_fail:
     name: Call Workflow Fails
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
-      fail: true
+      fail: 'true'
+      artifact-name: 'hello-world-fail'
 
-  call_workflow_again:
+  call_workflow_pass:
     name: Call Workflow Passes
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
-      fail: false
+      fail: 'false'
+      artifact-name: 'hello-world-pass'
+
+  call_workflow_default:
+    name: Call Workflow Default
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Call Workflow
 
   use_result_one:
     name: Use Result One
     if: always()
     runs-on: ubuntu-latest
-    needs: call_workflow
+    needs: call_workflow_pass
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Download file
         uses: actions/download-artifact@v4
         with:
-          name: hello-world
+          name: hello-world-pass
       - name: Verify file
         run: |
           file_content=$(cat hello.txt)
@@ -41,14 +50,33 @@ jobs:
     name: Use Result Two
     if: always()
     runs-on: ubuntu-latest
-    needs: call_workflow
+    needs: call_workflow_fail
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Download file
         uses: actions/download-artifact@v4
         with:
-          name: hello-world
+          name: hello-world-fail
+      - name: Verify file
+        run: |
+          file_content=$(cat hello.txt)
+          if [[ "$file_content" != "hello world" ]]; then
+            exit 1
+          fi
+
+  use_result_three:
+    name: Use Result Two
+    if: always()
+    runs-on: ubuntu-latest
+    needs: call_workflow_default
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Download file
+        uses: actions/download-artifact@v4
+        with:
+          name: hello-world-fail
       - name: Verify file
         run: |
           file_content=$(cat hello.txt)
