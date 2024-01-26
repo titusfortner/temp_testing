@@ -11,6 +11,7 @@ jobs:
     with:
       name: Call Workflow
       fail: 'true'
+      artifact-name: 'hello-world-fail'
 
   call_workflow_pass:
     name: Call Workflow Passes
@@ -18,23 +19,25 @@ jobs:
     with:
       name: Call Workflow
       fail: 'false'
+      artifact-name: 'hello-world-pass'
 
   call_workflow_default:
     name: Call Workflow Default
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
+      artifact-name: 'hello-world-defalt'
 
   use_result_one:
     name: Use Result One
     if: always()
     runs-on: ubuntu-latest
-    needs: call_workflow_default
+    needs: call_workflow_pass
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Download file
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: hello-world
       - name: Verify file
@@ -48,12 +51,12 @@ jobs:
     name: Use Result Two
     if: always()
     runs-on: ubuntu-latest
-    needs: call_workflow_default
+    needs: call_workflow_fail
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Download file
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: hello-world
       - name: Verify file

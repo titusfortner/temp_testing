@@ -12,6 +12,11 @@ on:
         required: false
         type: string
         default: 'false'
+      artifact-name:
+        description: Name of artifact
+        required: false
+        type: string
+        default: 'hello-world'
 
 jobs:
   called_job:
@@ -30,8 +35,8 @@ jobs:
           fi
       - name: "Upload changes"
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: hello-world
+          name: ${{ inputs.artifact-name }}
           path: hello.txt
           retention-days: 6
