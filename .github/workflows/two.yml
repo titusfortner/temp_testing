@@ -5,11 +5,18 @@ on:
 
 jobs:
   call_workflow:
-    name: Call Workflow
+    name: Call Workflow Fails
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
       fail: true
+
+  call_workflow_again:
+    name: Call Workflow Passes
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Call Workflow
+      fail: false
 
   use_result_one:
     name: Use Result One
