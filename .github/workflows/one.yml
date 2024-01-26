@@ -10,8 +10,8 @@ on:
       fail:
         description: Force to fail
         required: false
-        type: boolean
-        default: false
+        type: string
+        default: 'false'
 
 jobs:
   called_job:
@@ -23,14 +23,9 @@ jobs:
       - name: Save changes
         run: |
           echo "hello world" > hello.txt
-      - name: Check boolean conditional
-        run: |
-          if [[ false ]]; then
-            exit 1
-          fi
       - name: Check failure
         run: |
-          if [[ ${{ inputs.fail || inputs.fail == 'false' }} ]]; then
+          if [[ ${{ inputs.fail == 'true' }} ]]; then
             exit 1
           fi
       - name: "Upload changes"

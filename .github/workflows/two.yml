@@ -10,14 +10,14 @@ jobs:
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
-      fail: true
+      fail: 'true'
 
   call_workflow_pass:
     name: Call Workflow Passes
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
-      fail: false
+      fail: 'false'
 
   call_workflow_default:
     name: Call Workflow Default
