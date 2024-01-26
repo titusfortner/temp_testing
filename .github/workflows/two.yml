@@ -26,7 +26,6 @@ jobs:
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
-      artifact-name: 'hello-world-defalt'
 
   use_result_one:
     name: Use Result One
