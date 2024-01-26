@@ -16,7 +16,7 @@ on:
         description: Name of artifact
         required: false
         type: string
-        default: 'hello-world'
+        default: 'ignore-artifacts'
 
 jobs:
   called_job:
@@ -25,16 +25,17 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
-      - name: Save changes
-        run: |
-          echo "hello world" > hello.txt
       - name: Check failure
         run: |
           if [[ "${{ inputs.fail }}" == 'true' ]]; then
             exit 1
           fi
+      - name: Save changes
+        if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
+        run: |
+          echo "hello world" > hello.txt
       - name: "Upload changes"
-        if: ${{ always() }}
+        if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact-name }}
