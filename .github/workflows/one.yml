@@ -25,7 +25,7 @@ jobs:
           echo "hello world" > hello.txt
       - name: Check failure
         run: |
-          if [[ ${{ inputs.fail == 'true' }} ]]; then
+          if [[ "${{ inputs.fail }}" == 'true' }} ]]; then
             exit 1
           fi
       - name: "Upload changes"
