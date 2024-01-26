@@ -27,8 +27,8 @@ jobs:
         run: |
           echo ${{ inputs.fail  == true }}
           echo ${{ inputs.fail  == false }}
-          echo ${{ inputs.fail  == "true" }}
-          echo ${{ inputs.fail  == "false" }}
+          echo ${{ inputs.fail  == 'true' }}
+          echo ${{ inputs.fail  == 'false' }}
       - name: "Upload changes"
         if: ${{ always() && inputs.fail }}
         uses: actions/upload-artifact@v4
