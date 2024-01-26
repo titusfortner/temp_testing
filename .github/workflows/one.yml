@@ -30,7 +30,7 @@ jobs:
           fi
       - name: "Upload changes"
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: hello-world
           path: hello.txt
