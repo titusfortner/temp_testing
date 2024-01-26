@@ -25,9 +25,10 @@ jobs:
           echo "hello world" > hello.txt
       - name: Check failure
         run: |
-          if [[ ${{ inputs.fail }} ]]; then
-            exit 1
-          fi
+          echo ${{ inputs.fail  == true }}
+          echo ${{ inputs.fail  == false }}
+          echo ${{ inputs.fail  == "true" }}
+          echo ${{ inputs.fail  == "false }}
       - name: "Upload changes"
         if: ${{ always() && inputs.fail }}
         uses: actions/upload-artifact@v4

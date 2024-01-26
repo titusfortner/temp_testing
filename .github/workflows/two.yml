@@ -5,19 +5,25 @@ on:
   pull_request:
 
 jobs:
-  call_workflow:
+  call_workflo_fail:
     name: Call Workflow Fails
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
       fail: true
 
-  call_workflow_again:
+  call_workflow_pass:
     name: Call Workflow Passes
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
       fail: false
+
+  call_workflow_default:
+    name: Call Workflow Passes
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Call Workflow
 
   use_result_one:
     name: Use Result One
