@@ -1,0 +1,36 @@
+name: Three
+
+on:
+  workflow_dispatch:
+  pull_request:
+  issues:
+    types: [ labeled ]
+
+jobs:
+  call_workflow_fail:
+    name: Call Workflow Fails
+    if: github.event_name != 'issues'
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Failing Workflow
+      fail: 'true'
+
+  call_workflow_rerun:
+    name: Call Workflow Passes
+    if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'rerun-tests')
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Call Workflow
+      fail: 'false'
+
+  use_results:
+    name: Use Results
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if issue
+        run: |
+          if [[ github.event_name == 'issues' ]]; then
+            exit 1
+          else
+            exit 0
+          fi

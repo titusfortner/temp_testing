@@ -10,8 +10,8 @@ on:
       fail:
         description: Force to fail
         required: false
-        type: boolean
-        default: false
+        type: string
+        default: 'false'
 
 jobs:
   called_job:
@@ -20,18 +20,8 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
-      - name: Save changes
-        run: |
-          echo "hello world" > hello.txt
       - name: Check failure
         run: |
-          if [[ ${{ inputs.fail }} ]]; then
+          if [[ "${{ inputs.fail }}" == 'true' ]]; then
             exit 1
           fi
-      - name: "Upload changes"
-        if: ${{ always() && inputs.fail }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: hello-world
-          path: hello.txt
-          retention-days: 6
