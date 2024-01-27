@@ -24,12 +24,12 @@ jobs:
 
   use_results:
     name: Use Results
-    if: github.event.action != 'labeled' || github.event.label.name == 'rerun-tests')
+    if: github.event.action != 'labeled' || github.event.label.name == 'rerun-tests'
     runs-on: ubuntu-latest
     steps:
       - name: Fail if issue
         run: |
-          if [[ github.event.action == 'labeled' && github.event.label.name == 'rerun-tests') ]]; then
+          if [[ github.event.action == 'labeled' && github.event.label.name == 'rerun-tests' ]]; then
             exit 1
           else
             exit 0
