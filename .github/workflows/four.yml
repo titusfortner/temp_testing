@@ -1,0 +1,71 @@
+name: Three
+
+on:
+  workflow_dispatch:
+  pull_request:
+  issue_comment:
+    types: [created]
+
+jobs:
+  format_fail:
+    name: First Format Run
+    if: github.event_name != 'issue_comment'
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Failing Workflow
+      fail: 'true'
+
+  format_rerun:
+    name: Second Format Run
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, 'rerun-tests-label-added')
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Call Workflow
+      fail: 'false'
+
+  push_fixes:
+    name: Push Fixes
+    needs: format_fail
+    if: failure() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Commit files
+        id: git
+        run: |
+          echo "hello world" > hello.txt
+          git config --local user.email "titusfortner@users.noreply.github.com"
+          git config --local user.name "Titus Fortner"
+          git commit -am "fix formatting errors"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          branch: ${{ github.head_ref }}
+      - name: Add label
+        uses: actions/github-script@v7
+        with:
+          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['rerun-tests']
+            })
+
+  always_run:
+    name: Run if not a comment event
+    if: github.event_name != 'issue_comment' || contains(github.event.comment.body, 'rerun-tests-label-added')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check
+        run: |
+          if [[ github.event_name == 'pull_request' ]]; then
+            exit 1
+          else
+            exit 0
+          fi
