@@ -16,7 +16,7 @@ jobs:
 
   call_workflow_rerun:
     name: Call Workflow Passes
-    if: github.event.action == 'labeled' && github.event.label.name == 'rerun-tests')
+    if: github.event.action == 'labeled' && github.event.label.name == 'rerun-tests'
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
