@@ -1,0 +1,42 @@
+name: Three
+
+on:
+  workflow_dispatch:
+  pull_request:
+  issues:
+    types: [ labeled ]
+
+jobs:
+  call_workflow_fail:
+    name: Call Workflow Fails
+    if: github.event_name != 'issues'
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Failing Workflow
+      fail: 'true'
+
+  call_workflow_rerun:
+    name: Call Workflow Passes
+    if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'rerun-tests')
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Call Workflow
+      fail: 'false'
+
+  use_results:
+    name: Use Results
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Download file
+        uses: actions/download-artifact@v4
+        with:
+          name: hello-world-pass
+      - name: Verify file
+        run: |
+          if [[ github.event_name != 'issues' ]]; then
+            exit 0
+          else
+            exit 1
+          fi
