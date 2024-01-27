@@ -8,7 +8,7 @@ on:
 jobs:
   call_workflow_fail:
     name: Call Workflow Fails
-    if: if github.event.action != 'labeled'
+    if: github.event.action != 'labeled'
     uses: ./.github/workflows/one.yml
     with:
       name: Failing Workflow
