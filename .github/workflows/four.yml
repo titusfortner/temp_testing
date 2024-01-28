@@ -25,7 +25,7 @@ jobs:
   push_fixes:
     name: Push Fixes
     needs: format_fail
-    if: github.event_name == 'pull_request'
+    if: failure() && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Commit files
