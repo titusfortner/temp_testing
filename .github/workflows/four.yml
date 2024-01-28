@@ -25,7 +25,7 @@ jobs:
   push_fixes:
     name: Push Fixes
     needs: format_fail
-    if: failure() && github.event.action == 'pull_request'
+    if: github.event.action == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Commit files
@@ -53,13 +53,13 @@ jobs:
 
 
   always_run:
-    name: Like Tests
+    name: Run unless labeled
     if: always() && (github.event.action != 'labeled' || github.event.label.name == 'rerun-tests')
     runs-on: ubuntu-latest
     steps:
       - name: Check
         run: |
-          if [[ github.event_name == 'issues' ]]; then
+          if [[ github.event.action == 'labeled' ]]; then
             exit 0
           else
             exit 1
