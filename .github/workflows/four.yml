@@ -36,8 +36,8 @@ jobs:
         id: git
         run: |
           echo "hello world" > hello.txt
-          git config --local user.email "selenium-ci@users.noreply.github.com"
-          git config --local user.name "Selenium CI Bot"
+          git config --local user.email "titusfortner@users.noreply.github.com"
+          git config --local user.name "Titus Fortner"
           git commit -am "fix formatting errors"
       - name: Push changes
         uses: ad-m/github-push-action@master
