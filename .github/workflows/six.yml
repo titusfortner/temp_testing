@@ -59,7 +59,7 @@ jobs:
         run: echo ${{ github.event.label.name }}
       - name: Check
         run: |
-          if [[ github.event.label.name == 'rerun-tests' ]]; then
+          if [[ {{github.event.label.name == 'rerun-tests'}} ]]; then
             exit 0
           else
             exit 1
