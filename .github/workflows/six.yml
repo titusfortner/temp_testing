@@ -1,15 +1,14 @@
-name: Three
+name: Six
 
 on:
   workflow_dispatch:
   pull_request:
-  issue_comment:
-    types: [created]
+    types: [ labeled, opened, synchronize, reopened ]
 
 jobs:
   format_fail:
     name: First Format Run
-    if: github.event_name != 'issue_comment'
+    if: github.event.action != 'labeled'
     uses: ./.github/workflows/one.yml
     with:
       name: Failing Workflow
@@ -17,7 +16,7 @@ jobs:
 
   format_rerun:
     name: Second Format Run
-    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, 'rerun-tests-label-added')
+    if: github.event.label.name == 'rerun-tests'
     uses: ./.github/workflows/one.yml
     with:
       name: Call Workflow
@@ -26,7 +25,7 @@ jobs:
   push_fixes:
     name: Push Fixes
     needs: format_fail
-    if: failure() && github.event_name == 'pull_request'
+    if: failure() && github.event_name == 'pull_request' && github.event.action != 'labeled'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -46,25 +45,19 @@ jobs:
           github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
           branch: ${{ github.head_ref }}
       - name: Add label
-        uses: actions/github-script@v7
+        uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          script: |
-            github.rest.issues.addLabels({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              labels: ['rerun-tests']
-            })
+          labels: rerun-tests
 
   always_run:
     name: Run if not a comment event
-    if: github.event_name != 'issue_comment' || contains(github.event.comment.body, 'rerun-tests-label-added')
+    if: github.event.action != 'labeled' || github.event.label.name == 'rerun-tests'
     runs-on: ubuntu-latest
     steps:
       - name: Check
         run: |
-          if [[ github.event_name == 'pull_request' ]]; then
+          if [[ github.event.label.name != 'rerun-tests' ]]; then
             exit 1
           else
             exit 0
