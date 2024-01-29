@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Name
-        run: ${{ github.event.label.name }}
+        run: echo ${{ github.event.label.name }}
       - name: Check
         run: |
           if [[ github.event.label.name == 'rerun-tests' ]]; then
