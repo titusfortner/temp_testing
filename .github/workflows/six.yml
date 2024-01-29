@@ -55,6 +55,8 @@ jobs:
     if: github.event.action != 'labeled' || github.event.label.name == 'rerun-tests'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Passes
         if: github.event.label.name == 'rerun-tests'
         run: exit 0
