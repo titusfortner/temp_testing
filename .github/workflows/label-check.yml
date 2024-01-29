@@ -1,0 +1,14 @@
+name: Label Check
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [ labeled ]
+
+jobs:
+  format_fail:
+    name: First Format Run
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Failing Workflow
+      fail: 'false'
