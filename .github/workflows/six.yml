@@ -1,0 +1,65 @@
+name: Six
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [ labeled, opened, synchronize, reopened ]
+
+jobs:
+  format_fail:
+    name: First Format Run
+    if: github.event.action != 'labeled'
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Failing Workflow
+      fail: 'true'
+
+  format_rerun:
+    name: Second Format Run
+    if: github.event.label.name == 'rerun-tests'
+    uses: ./.github/workflows/one.yml
+    with:
+      name: Call Workflow
+      fail: 'false'
+
+  push_fixes:
+    name: Push Fixes
+    needs: format_fail
+    if: failure() && github.event_name == 'pull_request' && github.event.action != 'labeled'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Commit files
+        id: git
+        run: |
+          echo -e "\nhello again" >> hello.txt
+          git config --local user.email "titusfortner@users.noreply.github.com"
+          git config --local user.name "Titus Fortner"
+          git commit -am "fix formatting errors"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          branch: ${{ github.head_ref }}
+      - name: Add label
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          labels: rerun-tests
+
+  always_run:
+    name: Always run except for other labels
+    if: github.event.action != 'labeled' || github.event.label.name == 'rerun-tests'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Passes
+        if: github.event.label.name == 'rerun-tests'
+        run: exit 0
+      - name: Fails
+        if: github.event.label.name != 'rerun-tests'
+        run: exit 1
