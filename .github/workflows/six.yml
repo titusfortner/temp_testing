@@ -51,10 +51,12 @@ jobs:
           labels: rerun-tests
 
   always_run:
-    name: Run if not a comment event
+    name: Always run except for other labels
     if: github.event.action != 'labeled' || github.event.label.name == 'rerun-tests'
     runs-on: ubuntu-latest
     steps:
+      - name: Name
+        run: ${{ github.event.label.name }}
       - name: Check
         run: |
           if [[ github.event.label.name == 'rerun-tests' ]]; then
