@@ -58,7 +58,7 @@ jobs:
             })
 
   always_run:
-    name: Run unless labeled
+    name: Run if not a comment event
     if: github.event_name != 'issue_comment' || contains(github.event.comment.body, 'rerun-tests-label-added')
     runs-on: ubuntu-latest
     steps:

@@ -2,7 +2,7 @@
 labels:
   - name: rerun-tests
     labeled:
-      issue:
+      pr:
         body: |
           It has been requested that the tests be re-run. This may hae been executed manually or by a bot.
           
