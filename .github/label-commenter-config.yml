@@ -1,0 +1,13 @@
+# Configuration for Label Commenter - https://github.com/peaceiris/actions-label-commenter
+labels:
+  - name: rerun-tests
+    labeled:
+      issue:
+        body: |
+          It has been requested that the tests be re-run. This may hae been executed manually or by a bot.
+          
+          If the formatting check has failed, there is an automated action that attempts to fix the formatting,
+          commits the changes and adds them to this PR. The rerun-tests label is added, and this will kick off
+          the tests to run again.
+          
+          rerun-tests-label-added
