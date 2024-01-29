@@ -2,7 +2,7 @@
 name: Label Commenter
 
 on:
-  issues:
+  pull_request_target:
     types: [ labeled ]
 
 permissions:
