@@ -55,12 +55,9 @@ jobs:
     if: github.event.action != 'labeled' || github.event.label.name == 'rerun-tests'
     runs-on: ubuntu-latest
     steps:
-      - name: Name
-        run: echo ${{ github.event.label.name }}
-      - name: Check
-        run: |
-          if [[ {{github.event.label.name == 'rerun-tests'}} ]]; then
-            exit 0
-          else
-            exit 1
-          fi
+      - name: Passes
+        if: github.event.label.name == 'rerun-tests'
+        run: exit 0
+      - name: Fails
+        if: github.event.label.name != 'rerun-tests'
+        run: exit 1
