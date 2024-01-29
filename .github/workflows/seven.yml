@@ -1,9 +1,9 @@
-name: Six
+name: Seven
 
 on:
   workflow_dispatch:
   pull_request:
-    types: [ labeled, opened, synchronize, reopened ]
+  pull_request_target:
 
 jobs:
   format_fail:
@@ -25,7 +25,7 @@ jobs:
   push_fixes:
     name: Push Fixes
     needs: format_fail
-    if: failure() && github.event_name == 'pull_request' && github.event.action != 'labeled'
+    if: failure()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -44,19 +44,13 @@ jobs:
         with:
           github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
           branch: ${{ github.head_ref }}
-      - name: Add label
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          labels: rerun-tests
 
   always_run:
-    name: Always run except for other labels
-    if: github.event.action != 'labeled' || github.event.label.name == 'rerun-tests'
+    name: Always run
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Debug output
+        run: echo "${{ toJson(github) }}"
       - name: Passes
         if: github.event.label.name == 'rerun-tests'
         run: exit 0
